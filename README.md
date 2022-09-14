@@ -48,10 +48,12 @@ When [prometheus] scrapes the data, you can visualise the observed values:
     mtr-exporter [FLAGS] -- [MTR-FLAGS]
 
     FLAGS:
-    -bind <bind-address>
+    -bind  <bind-address>
               bind address (default ":8080")
-    -h        show help
-    -mtr <path-to-binary>
+    -h     show help
+    -jobs  <path-to-jobsfile>
+    -label <job-label> (default: "mtr-exporter-cli")
+    -mtr   <path-to-binary>
               path to mtr binary (default "mtr")
     -schedule <schedule>
               schedule at which often mtr is launched (default "@every 60s")

@@ -7,11 +7,13 @@ func usage() {
 	usage := `Usage: mtr-exporter [FLAGS] -- [MTR-FLAGS]
 
 FLAGS:
--bind <bind-address>
-	  bind address (default ":8080")
--h	  show help
--mtr <path-to-binary>
-	  path to mtr binary (default "mtr")
+-bind  <bind-address>
+	   bind address (default ":8080")
+-h	   show help
+-jobs  <path-to-jobsfile>
+-label <job-label> (default: "mtr-exporter-cli")
+-mtr   <path-to-binary>
+	   path to mtr binary (default "mtr")
 -schedule <schedule>
 	  schedule at which often mtr is launched (default "@every 60s")
 	  examples:
@@ -37,7 +39,13 @@ $> mtr-exporter -- -n example.com
 
 $> mtr-exporter -schedule "@every 30s" -- -G 1 -m 3 -I ven3 -n example.com
 # probe every 30s "example.com", wait 1s for response, try a max of 3 hops,
-# use interface "ven3", do not resolve DNS.`
+# use interface "ven3", do not resolve DNS.
 
+Example Job File:
+
+    # comments are ignore
+    job1 -- @every 30s -- -I ven1 -n example.com
+    job2 -- @every 30s -- -I ven2 -n example.com
+`
 	fmt.Println(usage)
 }

@@ -1,4 +1,4 @@
-package main
+package job
 
 import (
 	"bytes"
@@ -6,12 +6,16 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+    "github.com/mgumz/mtr-exporter/pkg/mtr"
 )
 
-type mtrJob struct {
-	Report   *mtrReport
+type Job struct {
+	Report   *mtr.Report
 	Launched time.Time
 	Duration time.Duration
+	Schedule string
+	Label    string
 
 	mtrBinary string
 	args      []string
@@ -20,21 +24,22 @@ type mtrJob struct {
 	sync.Mutex
 }
 
-func newMtrJob(mtr string, args []string) *mtrJob {
+func NewJob(mtr string, args []string, schedule string) *Job {
 	extra := []string{
 		"-j", // json output
 	}
 	args = append(extra, args...)
 	cmd := exec.Command(mtr, args...)
 
-	return &mtrJob{
+	return &Job{
+		Schedule:  schedule,
 		args:      args,
 		mtrBinary: mtr,
 		cmdLine:   strings.Join(cmd.Args, " "),
 	}
 }
 
-func (job *mtrJob) Launch() error {
+func (job *Job) Launch() error {
 
 	// TODO: maybe use CommandContext to have an upper limit in the execution
 
@@ -50,7 +55,7 @@ func (job *mtrJob) Launch() error {
 	duration := time.Since(launched)
 
 	// decode the report
-	report := &mtrReport{}
+	report := &mtr.Report{}
 	if err := report.Decode(&buf); err != nil {
 		return err
 	}
@@ -65,3 +70,4 @@ func (job *mtrJob) Launch() error {
 	// done.
 	return nil
 }
+
